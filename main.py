@@ -40,6 +40,12 @@ def main():
     # must be world-readable. Never chmod the /output directory: it is
     # root-owned and chmod on it fails the run.
     os.chmod(out_path, 0o644)
+    # Prove the write landed whole: read it back and compare against
+    # the line that passed validation, byte for byte.
+    with open(out_path, "r", encoding="utf-8", newline="") as handle:
+        written = handle.read()
+    if written != line:
+        raise SystemExit("output file does not match the validated line")
 
 
 if __name__ == "__main__":
